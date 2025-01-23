@@ -299,8 +299,6 @@
     </div>
     <script>
         const warning = $("#warning");
-        let timeout = 0;
-        let index = 0;
 
         function $(location) {
             return document.querySelector(location);
@@ -311,19 +309,12 @@
         })
 
         $("#apply").addEventListener("click", e => {
-            if(warning.classList.contains("active")) {
-                setTimeout(() => {
-                    if(timeout == index) warning.classList.remove("active");
-                },5000);
-
-                return;
-            }
+            if(warning.classList.contains("active")) return;
 
             warning.classList.add("active");
 
             setTimeout(() => {
-                console.log(this)
-                if(timeout == index) warning.classList.remove("active");
+                warning.classList.remove("active");
             },5000);
         })
     </script>

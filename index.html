@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Vietnam War Draft </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;700&family=Neucha&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="./imgs/favicon.ico" type="image/x-icon">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        
+        button:active, input:focus {
+            outline: none;
+        }
+        
+        button:hover {
+            cursor: pointer
+        }
+        
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to left, #989D86 50%, #C99E60 50%);
+            position: relative;
+        }
+        
+        body::after {
+            content: "";
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: transparent;
+            transition: background 2s ease;
+            z-index: -1;
+        }
+
+        body.died::after {
+            background: black;
+            z-index: 95;
+        }
+
+        #death-screen {
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url("./imgs/death-screen.webp");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 4s ease 2s;
+        }
+
+        body.died #death-screen {
+            opacity: 1;
+            z-index: 100;
+        }
+
+        #draft,#college {
+            height: 100vh;
+            width: calc((100vw - 90vh) / 2);
+            display: grid;
+            place-content: center;
+            font-size: 90px;
+            color: white;
+            text-align: center;
+            text-transform: uppercase;
+            font-family:Arial, Helvetica, sans-serif;
+            text-shadow: 2px 2px 40px #000000;
+            filter:blur(2px);
+            z-index: 0;
+        }
+
+        #draft > img, #college > img {
+            width: min(90%, 30vh);
+            position: absolute;
+            bottom: 30px;
+            filter: brightness(10%) blur(2px);
+            left: max((100% - min(90%,30vh)) / 2);
+        }
+        
+        #college > img {
+            bottom: 0 !important;
+            width: min(70%, 23vh);
+            left: max((100% - min(70%,23vh)) / 2);
+        }
+
+        #container {
+            height: 100vh;
+            aspect-ratio: .9;
+            position: relative;
+            background: #403E29;
+            overflow: hidden;
+            -webkit-box-shadow: 0px 0px 115px -8px rgba(0,0,0,0.78);
+            -moz-box-shadow: 0px 0px 115px -8px rgba(0,0,0,0.78);
+            box-shadow: 0px 0px 115px -8px rgba(0,0,0,0.78);
+            z-index: 2;
+        }
+
+        #warning {
+            --height: calc(1.5em * 4);
+            position: absolute;
+            top: -50%;
+            left: calc((100% - 1.5em * 16) / 2);
+            width: calc(1.5em * 16);
+            height: var(--height);
+            padding: 1vh;
+            background: #fe5151;
+            border: 30px solid #FF0C0F;
+            border-radius: 30px;
+            text-align: center;
+            line-height: 1.5em;
+            z-index: 95;
+            font-size: 2vh;
+            text-transform: capitalize;
+            font-family: sans-serif;
+            font-weight: 500;
+            font-style: normal;
+            color: white;
+            filter: blur(1px);
+            cursor: text;
+            user-select:text !important;
+        }
+
+        #warning > bold {
+            text-transform: uppercase;
+            user-select:text !important;
+        }
+
+        #warning.active {
+            animation: warning 5s ease-in-out forwards;
+        }
+
+        #header {
+            display: grid;
+            place-content: center;
+            text-align: center;
+            font-size: min(2vmin,200px);
+            height: 15%;
+            color: white;
+            letter-spacing: 2px;
+            background: #172420;
+            font-family: "Neucha", serif;
+            font-weight: 400;
+            font-style: normal;
+            text-transform: uppercase;
+            filter: blur(3px);
+        }
+
+        #path-choose {
+            height: 85%;
+            width: 100%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #war-path, #college-path {
+            position: relative;
+            height: 100%;
+            width: 50%;
+        }
+
+        #register-container, #apply-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #register, #apply {
+            text-align: center;
+            font-size: 5vh;
+            position: relative;
+            bottom: -13vh;
+            font-family: "Neucha", serif;
+            font-weight: 400;
+            font-style: normal;
+            text-transform: uppercase;
+            filter: blur(1px);
+            color: white;
+            letter-spacing: 5px;
+            cursor: pointer;
+        }
+
+        body:not(.died) #register:hover, body:not(.died) #apply:hover {
+            text-shadow: 0px 0px 20px #FFFA70;
+        }
+
+        #war-path {
+            background: linear-gradient(to bottom, #5D4A15, #B08E47); 
+        }
+
+        #war-path > img#get-drafted, #college-path > img#go-to-college {
+            width: 100%;
+            filter: contrast(300%) saturate(200%) brightness(200%);
+        }
+
+        #war-path > img#soldiers, #college-path > img#students {
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        #college-path > img#students {
+            bottom: -85px !important;
+        }
+
+        #college-path {
+            background: linear-gradient(to bottom, #5A867F, #EFDEBE);
+        }
+
+        @keyframes warning {
+            0% {
+                top: calc(-1.5 * var(--height));
+            }
+
+            5% {
+                top: 2em;
+            }
+
+            95% {
+                top: 2em;
+            }
+
+            100% {
+                top: calc(-1.5 * var(--height));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="death-screen"></div>
+
+    <div id="draft">
+        Congratulations
+        <br>
+        <br>
+        <br>
+        You are going to Vietnam
+        <img src="./imgs/soldier.png" alt="Soldier">
+    </div>
+    <div id="container">
+        <div id="warning">
+            <bold>error:</bold>
+            <br>
+            you are in the lower class
+            <br>
+            you will be drafted
+            <br>
+            please click the "register" button below
+        </div>
+
+        <div id="header">
+            <h1>you have graduated high school<br>Please select your path:</h1>
+        </div>
+        
+        <div id="path-choose">
+            <div id="war-path">
+                <img src="./imgs/get-drafted.png" alt="GET DRAFTED" id="get-drafted">
+                <div id="register-container">
+                    <p id="register">click here to <br>register</p>
+                </div>
+                <img src="./imgs/soldiers.png" alt="Soldiers" id="soldiers">
+            </div>
+            <div id="college-path">
+                <img src="./imgs/go-to-college.png" alt="GO TO COLLEGE" id="go-to-college">
+                <div id="apply-container">
+                    <p id="apply">click here to<br> apply</p>
+                </div>
+                <img src="./imgs/students.png" alt="Students" id="students">
+            </div>
+        </div>
+    </div>
+    <div id="college">
+        Congratulations
+        <br>
+        <br>
+        <br>
+        You are going to College
+        <img src="./imgs/student.png" alt="Student">
+    </div>
+    <script>
+        const warning = $("#warning");
+        let timeout = 0;
+        let index = 0;
+
+        function $(location) {
+            return document.querySelector(location);
+        }
+
+        $("#register").addEventListener("click", e => {
+            document.body.classList.add("died");
+        })
+
+        $("#apply").addEventListener("click", e => {
+            if(warning.classList.contains("active")) {
+                setTimeout(() => {
+                    if(timeout == index) warning.classList.remove("active");
+                },5000);
+
+                return;
+            }
+
+            warning.classList.add("active");
+
+            setTimeout(() => {
+                console.log(this)
+                if(timeout == index) warning.classList.remove("active");
+            },5000);
+        })
+    </script>
+</body>
+</html>
